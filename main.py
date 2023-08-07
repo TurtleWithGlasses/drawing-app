@@ -33,6 +33,20 @@ class free_hand_drawing(tk.Tk):
         t_list.bind("<<ComboboxSelected>>", self._change_thickness)
         t_list.grid(row=0, column=1, padx=5)
 
+        tk.Button(topframe, text="Undo", bg="blue", fg="white",
+                  activebackground="blue4", activeforeground="white",
+                  command=self._undo).grid(row=0, column=2, padx=5)
+
+        tk.Button(topframe, text="Clear", bg="blue", fg="white",
+                  activebackground="blue4", activeforeground="white",
+                  command=self._clear).grid(row=0, column=3, padx=5)
+
+        self.canvas = tk.canvas(self, width=500, height=500, bg="white")
+        self.canvas.grid(row=1, column=0, padx=10, pady=(0, 10))
+        self.canvas.bind("<>", self._on_release)
+        self.canvas.bind("<B1-Motion>", self._on_movement)
+
+
 
 
 
