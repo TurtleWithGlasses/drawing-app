@@ -43,7 +43,7 @@ class free_hand_drawing(tk.Tk):
 
         self.canvas = tk.Canvas(self, width=500, height=500, bg="white")
         self.canvas.grid(row=1, column=0, padx=10, pady=(0, 10))
-        self.canvas.bind("<>", self._on_release)
+        self.canvas.bind("<ButtonRelease-1>", self._on_release)
         self.canvas.bind("<B1-Motion>", self._on_movement)
 
     def _change_color(self, event=None):
@@ -61,6 +61,25 @@ class free_hand_drawing(tk.Tk):
         if current_tag >= 1:
             self.canvas.delete("tag" + str(current_tag-1))
             self.tag = ["tag", str(current_tag - 1)]
+
+    def _on_movement(self, event):
+        tag = "".join(self.tag)
+        x1, y1 = (event.x - self.thickness), (event.y - self.thickness)
+        x2, y2 = (event.x - self.thickness), (event.y - self.thickness)
+        event.widget.create_oval(x1, y1, x2, y2, width=0, fill=self.color, tag=tag)
+        if self._xold is not None and self._yold is not None:
+            self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=self.color, tag=tag)
+            self.canvas.create_line(self._xold, self._yold, event.x, event.y,
+                                    smooth=True, width=2*self.thickness,
+                                    fill=self.color, tag=tag)
+
+        self._xold = event.x
+        self._yold = event.y
+
+    def _on_release(self, event):
+        self._xold = None
+        self._yold = None
+        self.tag = ["tag", str(int(self.tag[1])+1)]
 
 
 free_hand_drawing().mainloop()
